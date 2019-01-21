@@ -7,6 +7,7 @@ from flask_moment import Moment
 
 
 
+
 import logging
 from logging.handlers import SMTPHandler
 from flask_migrate import Migrate
@@ -16,7 +17,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask import Flask
 from config import Config
 from flask_mail import Mail
-
+from flask_babel import Babel
+from flask import request
+from flask_babel import lazy_gettext as _l
 
 
 
@@ -27,13 +30,16 @@ migrate = Migrate(app, db)
 login = LoginManager(app)
 mail = Mail(app)
 login.login_view = 'login'
+login.login_message = _l('Please log in to access this page')
 bootstrap = Bootstrap(app)
 moment = Moment(app)
+babel = Babel(app)
 
 
 
 
 from app import routes, models, errors
+
 
 
 
@@ -56,3 +62,11 @@ if not app.debug:
             credentials=auth, secure=secure)
         mail_handler.setLevel(logging.ERROR)
         app.logger.addHandler(mail_handler)
+
+@babel.localeselector
+def get_locale():
+    #return request.accept_language.best_match(app.config['LANGUAGES'])
+    return 'es'
+
+
+
