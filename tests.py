@@ -2,10 +2,11 @@ from datetime import datetime, timedelta
 import unittest
 from app import app, db
 from app.models import User, Post
+from flask import current_app
 
 class UserModelCase(unittest.TestCase):
     def setUp(self):
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
+        current_app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite://'
         db.create_all()
     def tearDown(self):
         db.session.remove()
