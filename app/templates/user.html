@@ -34,4 +34,11 @@
     <a href="{{ next_url }}"> {{_('Older Posts')}} </a>
     {% endif %}
 
+    {% if user != current_user %}
+        <p>
+            <a href="{{ url_for('main.send_message', recipient=user.username )}}">
+            {{ _('Send private message')}}
+            </a>
+        </p>
+    {% endif %}
 {% endblock %}
