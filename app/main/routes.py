@@ -1,4 +1,4 @@
-from flask import render_template, redirect, flash , url_for, request
+from flask import render_template, redirect, flash , url_for, request, jsonify
 from app import db
 from app.main.forms import  EditProfileForm, PostForm
 from flask_login import current_user, login_user, logout_user, login_required
@@ -162,8 +162,8 @@ def messages():
     db.session.commit()
     page = request.args.get('page', 1, type=int)
     messages = current_user.messages_received.order_by(
-        Message.timestamp.desc()).paginate(
-            page, current_app.config['POST_PER_PAGE'], False 
+        Message.time_stamp.desc()).paginate(
+            page, current_app.config['POSTS_PER_PAGE'], False 
             )
     next_url = url_for('main.messages', page=messages.next_num) if messages.has_next else None
     prev_url = url_for('main.messages', page=messages.prev_num) if messages.has_prev else None 
@@ -176,10 +176,10 @@ def messages():
 @login_required
 def notifications():
     since = request.args.get('since', 0.0, type=float)
-    notifications = current_user.notifications.filter( Notification.timestamp > since ).order_by(Notification.timestamp.asc())
+    notifications = current_user.notifications.filter( Notification.time_stamp > since ).order_by(Notification.time_stamp.asc())
 
     return jsonify([{
         'name': n.name,
         'data': n.get_data(),
-        'timestamp': n.timestamp
+        'time_stamp': n.time_stamp
     } for n in notifications ])
